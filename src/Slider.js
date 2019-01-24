@@ -167,6 +167,11 @@ export default class Slider extends PureComponent {
      * Used to configure the animation parameters.  These are the same parameters in the Animated library.
      */
     animationConfig: PropTypes.object,
+    
+    /**
+     * Used to determine the orientation of the slider. This allows for the orientation of the component to be both horizontal and vertical.
+     */
+    orientation: PropTypes.oneOf(['horizontal', 'vertical']),
   };
 
   static defaultProps = {
@@ -419,6 +424,10 @@ export default class Slider extends PureComponent {
   _getValue = (gestureState: Object) => {
     const length = this.state.containerSize.width - this.state.thumbSize.width;
     const thumbLeft = this._previousLeft + gestureState.dx;
+    
+    var swipeMovement = this.props.orientation === 'vertical' ? gestureState.dy : gestureState.dx;
+    var swipeDirection = this.props.inverted ? -swipeMovement : swipeMovement;
+    var thumbLeft = this._previousLeft + swipeDirection;
 
     const nonRtlRatio = thumbLeft / length;
     const ratio = I18nManager.isRTL ? 1 - nonRtlRatio : nonRtlRatio;
